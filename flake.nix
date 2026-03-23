@@ -33,6 +33,8 @@
             cargo-semver-checks
             rust-analyzer
             rust-bin.stable.latest.default
+            protobuf
+            protoc-gen-tonic
           ];
         };
       }
