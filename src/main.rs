@@ -13,6 +13,9 @@ use crate::mmf::{
 
 pub mod mmf {
     tonic::include_proto!("open_match2");
+
+    pub(crate) const FILE_DESCRIPTOR_SET: &[u8] =
+        tonic::include_file_descriptor_set!("open-match2-descriptor");
 }
 
 #[derive(Default)]
@@ -44,7 +47,6 @@ impl MatchMakingFunctionService for Mff {
         let matches = make_matches(tickets)
             .context("Failed to create matches")
             .map_err(|e| {
-                println!("{e}");
                 Status::new(
                     Code::InvalidArgument,
                     "Failed to create matches with the provided tickets",
@@ -101,11 +103,16 @@ fn make_matches(tickets: Vec<Ticket>) -> anyhow::Result<Vec<Match>> {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
+    let reflection_service = tonic_reflection::server::Builder::configure()
+        .register_encoded_file_descriptor_set(mmf::FILE_DESCRIPTOR_SET)
+        .build_v1alpha()?;
+
     let addr = "127.0.0.1:8000".parse()?;
     let mmf = Mff::default();
 
     Server::builder()
         .add_service(MatchMakingFunctionServiceServer::new(mmf))
+        .add_service(reflection_service)
         .serve(addr)
         .await?;
     Ok(())
