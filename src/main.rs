@@ -46,7 +46,7 @@ impl MatchMakingFunctionService for Mff {
 
         let matches = make_matches(tickets)
             .context("Failed to create matches")
-            .map_err(|e| {
+            .map_err(|_e| {
                 Status::new(
                     Code::InvalidArgument,
                     "Failed to create matches with the provided tickets",
@@ -108,10 +108,9 @@ async fn main() -> anyhow::Result<()> {
         .build_v1alpha()?;
 
     let addr = "127.0.0.1:8000".parse()?;
-    let mmf = Mff::default();
 
     Server::builder()
-        .add_service(MatchMakingFunctionServiceServer::new(mmf))
+        .add_service(MatchMakingFunctionServiceServer::new(Mff))
         .add_service(reflection_service)
         .serve(addr)
         .await?;

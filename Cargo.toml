@@ -1,6 +1,6 @@
 [package]
 name = "matchmaking-function"
-version = "0.1.0"
+version = "0.0.1"
 edition = "2024"
 license = "AGPL-3.0-only"
 
@@ -17,3 +17,21 @@ tonic-reflection = "0.14.5"
 
 [build-dependencies]
 tonic-prost-build = "0.14"
+
+[package.metadata.cargo-machete]
+ignored = ["prost", "tonic-prost", "prost-types"]
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+unwrap_in_result = "warn"
+unwrap_used = "warn"
+expect_used = "warn"
+panic = "warn"
+panic_in_result_fn = "warn"
+float_cmp = "warn"
+float_cmp_const = "warn"
+todo = "warn"
+cast_lossless = "warn"
+cognitive_complexity = "warn"
